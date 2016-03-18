@@ -18,8 +18,6 @@ define(function(require, exports, module)
         
         function load(){}
         
-        
-
         var passengers = [];
         var flightTakeoffItem = new ui.item(
         {
@@ -46,6 +44,7 @@ define(function(require, exports, module)
         function flightLanding()
         {
             var destination = tree.selectedNode;
+            var destinationFolder = tree.getSelectedFolder();
             console.log(destination);
             for(var a in passengers)
             {

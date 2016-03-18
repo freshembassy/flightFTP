@@ -14,8 +14,13 @@
     "url": "https://github.com/freshembassy/flightFTP"
   },
   "plugins": {
-    "flightFTP": {}
+    "flightFTP": {
+      "packagePath": "plugins/flightFTP/flightFTP"
+    }
   },
-  "categories": ["miscellaneous"],
-  "licenses": []
+  "categories": [
+    "miscellaneous"
+  ],
+  "licenses": [],
+  "permissions": "world"
 }
