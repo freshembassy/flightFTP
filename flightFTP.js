@@ -1,6 +1,6 @@
 define(function(require, exports, module)
 {
-    main.consumes = ["Plugin", "tree", "ui", "menus"];
+    main.consumes = ["Plugin", "tree", "ui", "menus", "fs"];
     main.provides = ["flightFTP"];
     return main;
 
@@ -10,6 +10,7 @@ define(function(require, exports, module)
         var menus = imports.menus;
         var tree = imports.tree;
         var ui = imports.ui;
+        var fs = imports.fs;
         
         /***** Initialization *****/
         
@@ -22,12 +23,18 @@ define(function(require, exports, module)
         var flightTakeoffItem = new ui.item(
         {
                 caption: "Flight - Takeoff",
-                isAvailable:function(editor){return true;},
+                isAvailable:function(editor)
+                {
+                    var tempSelect = tree.selection;
+                    for(var a in tempSelect) if(tempSelect[a].indexOf("~/mounts/")!=-1) return false;
+                    return true;
+                },
                 onclick:flightTakeoff
         });
         
         function flightTakeoff()
         {
+            console.log(tree.selection[0]);
             passengers = tree.selection;
         }
         
@@ -36,6 +43,8 @@ define(function(require, exports, module)
                 caption:"Flight - Landing",
                 isAvailable:function(editor)
                 {
+                    var tempSelect = tree.getSelectedFolder().path;
+                    if(tempSelect.indexOf("~/mounts/")==-1) return false;
                     return (passengers.length > 0);
                 },
                 onclick:flightLanding
@@ -48,7 +57,11 @@ define(function(require, exports, module)
             console.log(destinationFolder);
             for(var a in passengers)
             {
-                
+                fs.copy(destinationFolder, "~/workspace"+passengers[a], {overwrite:false, recursive:false}, function(err, data)
+                {
+                    if(!err) return;
+                    alert(err);
+                });
             }
         }
         
