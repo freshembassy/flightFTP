@@ -55,6 +55,7 @@ define(function(require, exports, module)
             var destination = tree.selectedNode;
             var destinationFolder = tree.getSelectedFolder().path;
             console.log(destinationFolder);
+            var success = true;
             for(var a in passengers)
             {
                 console.log("copying:");
@@ -63,9 +64,15 @@ define(function(require, exports, module)
                 fs.copy("~/workspace"+passengers[a].path, destinationFolder+"/"+passengers[a].label, {overwrite:false, recursive:false}, function(err, data)
                 {
                     if(!err) return;
+                    success = false;
                     alert(err);
                 });
             }
+            tree.refresh([destinationFolder],function(err)
+            {
+                
+            });
+            if(success)alert("The flight was successful.");
         }
         
         
