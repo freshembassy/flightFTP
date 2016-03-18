@@ -1,0 +1,21 @@
+{
+  "name": "flightFTP",
+  "description": "Used for sending cloud9 files to a mounted FTP server.",
+  "version": "0.0.1",
+  "author": "Gery Teague",
+  "contributors": [
+    {
+      "name": "",
+      "email": ""
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/freshembassy/flightFTP"
+  },
+  "plugins": {
+    "flightFTP": {}
+  },
+  "categories": ["miscellaneous"],
+  "licenses": []
+}
