@@ -34,8 +34,8 @@ define(function(require, exports, module)
         
         function flightTakeoff()
         {
-            console.log(tree.selection[0]);
-            passengers = tree.selection;
+            passengers = tree.selectedNodes;
+            console.log(passengers[0]);
         }
         
         var flightLandingItem = new ui.item(
@@ -60,7 +60,7 @@ define(function(require, exports, module)
                 console.log("copying:");
                 console.log("TO:"+destinationFolder);
                 console.log("FROM:"+"~/workspace"+passengers[a]);
-                fs.copy(""+destinationFolder, "~/workspace"+passengers[a], {overwrite:false, recursive:false}, function(err, data)
+                fs.copy(""+destinationFolder+"/"+passengers[a].label, "~/workspace"+passengers[a].path, {overwrite:false, recursive:false}, function(err, data)
                 {
                     if(!err) return;
                     alert(err);
