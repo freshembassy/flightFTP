@@ -60,7 +60,7 @@ define(function(require, exports, module)
                 console.log("copying:");
                 console.log("TO:"+destinationFolder);
                 console.log("FROM:"+"~/workspace"+passengers[a]);
-                fs.copy(""+destinationFolder+"/"+passengers[a].label, "~/workspace"+passengers[a].path, {overwrite:false, recursive:false}, function(err, data)
+                fs.copy("~/workspace"+passengers[a].path, destinationFolder+"/"+passengers[a].label, {overwrite:false, recursive:false}, function(err, data)
                 {
                     if(!err) return;
                     alert(err);
