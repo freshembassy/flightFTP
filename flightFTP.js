@@ -53,11 +53,14 @@ define(function(require, exports, module)
         function flightLanding()
         {
             var destination = tree.selectedNode;
-            var destinationFolder = tree.getSelectedFolder();
+            var destinationFolder = tree.getSelectedFolder().path;
             console.log(destinationFolder);
             for(var a in passengers)
             {
-                fs.copy(destinationFolder, "~/workspace"+passengers[a], {overwrite:false, recursive:false}, function(err, data)
+                console.log("copying:");
+                console.log("TO:"+destinationFolder);
+                console.log("FROM:"+"~/workspace"+passengers[a]);
+                fs.copy(""+destinationFolder, "~/workspace"+passengers[a], {overwrite:false, recursive:false}, function(err, data)
                 {
                     if(!err) return;
                     alert(err);
