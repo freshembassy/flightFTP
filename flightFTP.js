@@ -45,7 +45,7 @@ define(function(require, exports, module)
         {
             var destination = tree.selectedNode;
             var destinationFolder = tree.getSelectedFolder();
-            console.log(destination);
+            console.log(destinationFolder);
             for(var a in passengers)
             {
                 
