@@ -68,7 +68,7 @@ define(function(require, exports, module)
             currPassenger = 0;
             
             destinationFolder = tree.getSelectedFolder().path;
-            
+            notification.show("<div style='background:#777700'>Flight FTP - Processing please wait until the 'Flight Complete' dialog appears.</div>", true);
             tryToLandCurrFile();
         }
         
@@ -164,7 +164,6 @@ define(function(require, exports, module)
         
         function landingComplete()
         {
-            notification.show("Flight FTP - Refresh may be required to show updated FTP state.", true);
             tree.refresh(tree.selectedNodes, function(err)
             {
                 if(err)

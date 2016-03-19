@@ -1,7 +1,7 @@
 {
   "name": "flightFTP",
   "description": "Used for sending cloud9 files to a mounted FTP server.",
-  "version": "0.1.05",
+  "version": "0.1.06",
   "author": "Gery Teague",
   "contributors": [
     {
