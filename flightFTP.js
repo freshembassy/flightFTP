@@ -1,6 +1,6 @@
 define(function(require, exports, module)
 {
-    main.consumes = ["Plugin", "tree", "ui", "menus", "fs"];
+    main.consumes = ["Plugin", "tree", "ui", "menus", "fs", "dialog"];
     main.provides = ["flightFTP"];
     return main;
 
@@ -11,6 +11,7 @@ define(function(require, exports, module)
         var tree = imports.tree;
         var ui = imports.ui;
         var fs = imports.fs;
+        var fileoverwrite = imports.dialog.fileoverwrite;
         
         /***** Initialization *****/
         
@@ -50,29 +51,118 @@ define(function(require, exports, module)
                 onclick:flightLanding
         });
             
+        var destinationFolder;
+        var success;
+        var overwriteAll;
+        var skipAll;
+        var currPassenger;
         function flightLanding()
         {
-            var destination = tree.selectedNode;
-            var destinationFolder = tree.getSelectedFolder().path;
-            console.log(destinationFolder);
-            var success = true;
-            for(var a in passengers)
+            overwriteAll = false;
+            skipAll = false;
+            success = true;
+            currPassenger = 0;
+            
+            destinationFolder = tree.getSelectedFolder().path;
+            
+            tryToLandCurrFile();
+        }
+        
+        function tryToLandCurrFile()
+        {
+            console.log("copying:");
+            console.log("TO:"+destinationFolder);
+            console.log("FROM:"+"~/workspace"+passengers[currPassenger]);
+            
+            //  check to make sure there are still files to copy
+            if(currPassenger>=passengers.length)
             {
-                console.log("copying:");
-                console.log("TO:"+destinationFolder);
-                console.log("FROM:"+"~/workspace"+passengers[a]);
-                fs.copy("~/workspace"+passengers[a].path, destinationFolder+"/"+passengers[a].label, {overwrite:false, recursive:false}, function(err, data)
-                {
-                    if(!err) return;
-                    success = false;
-                    alert(err);
-                });
+                landingComplete();
             }
+            //  there are still files, try to copy them
+            else
+            {
+                //  if we're not overwriting everything then start checking for
+                //  existing files
+                if(!overwriteAll)
+                {
+                    fs.exists(destinationFolder+"/"+passengers[currPassenger].label, function(exists)
+                    {
+                        if(exists)
+                        {
+                            //  we're not skipping all, so check if we want to skip/overwrite this one
+                            if(!skipAll)
+                            {
+                                //  title of the overwrite dialog
+                                fileoverwrite.show("Flight - Landing",
+                                //  message about file
+                                "File: "+passengers[currPassenger].label+" already exists.",
+                                "Would you like to overwrite it?",
+                                //  handle overwrite
+                                //  if isAll = true, then we are overwriting all the files
+                                //  if isAll = false, then we are overwriting just this file
+                                function(isAll)
+                                {
+                                    // we're overwriting all
+                                    if(isAll) overwriteAll = true;
+                                    
+                                    forceLandCurrFile();
+                                },
+                                //  handle skip
+                                //  if isAll = true, then we are skipping all the files
+                                //  if isAll = false, then we are skipping just this file
+                                function(isAll)
+                                {
+                                    if(isAll) skipAll = true;
+                                    
+                                    currPassenger ++
+                                    tryToLandCurrFile();
+                                },
+                                //  show the all buttons and the cancel button
+                                { all: true, cancel:true });
+                            }
+                            //  we are skipping all existing files, so advance to the next file
+                            //  and try to land it
+                            else
+                            {
+                                currPassenger ++;
+                                tryToLandCurrFile();
+                            }
+                        }
+                        //  the file doesn't already exist, just copy it
+                        else
+                        {
+                            forceLandCurrFile();
+                        }
+                    });
+                }
+                //  We are overwritting everything so force land the file
+                else
+                {
+                    forceLandCurrFile();
+                }
+            }
+        }
+        
+        function forceLandCurrFile()
+        {
+            fs.copy("~/workspace"+passengers[currPassenger].path, destinationFolder+"/"+passengers[currPassenger].label, {overwrite:true, recursive:true}, 
+            function(err, data)
+            {
+                if(!err) return;
+                success = false;
+                alert(err);
+            });
+            currPassenger ++;
+            tryToLandCurrFile();
+        }
+        
+        function landingComplete()
+        {
             tree.refresh(tree.selectedNodes, function(){});
             if(success)alert("The flight was successful.");
         }
-        
-        
+            
         /***** Methods *****/
 
         
