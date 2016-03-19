@@ -13,7 +13,7 @@ define(function(require, exports, module)
         var fs = imports.fs;
         var fileoverwrite = imports["dialog.fileoverwrite"];
         var alertDialog = imports["dialog.alert"];
-        var notification = imports["notification.bubble"]
+        var notification = imports["dialog.notification"];
         
         /***** Initialization *****/
         
