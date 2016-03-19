@@ -164,7 +164,7 @@ define(function(require, exports, module)
         
         function landingComplete()
         {
-            notification("Flight FTP - Refresh may be required to show updated FTP state.", true);
+            notification.show("Flight FTP - Refresh may be required to show updated FTP state.", true);
             tree.refresh(tree.selectedNodes, function(err)
             {
                 if(err)
