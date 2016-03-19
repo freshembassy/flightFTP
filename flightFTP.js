@@ -1,6 +1,6 @@
 define(function(require, exports, module)
 {
-    main.consumes = ["Plugin", "tree", "ui", "menus", "fs", "dialog.fileoverwrite"];
+    main.consumes = ["Plugin", "tree", "ui", "menus", "fs", "dialog.fileoverwrite", "dialog.alert"];
     main.provides = ["flightFTP"];
     return main;
 
@@ -12,6 +12,7 @@ define(function(require, exports, module)
         var ui = imports.ui;
         var fs = imports.fs;
         var fileoverwrite = imports["dialog.fileoverwrite"];
+        var alertDialog = imports["dialog.alert"];
         
         /***** Initialization *****/
         
@@ -56,11 +57,13 @@ define(function(require, exports, module)
         var overwriteAll;
         var skipAll;
         var currPassenger;
+        var anySkip;
         function flightLanding()
         {
             overwriteAll = false;
             skipAll = false;
             success = true;
+            anySkip = false;
             currPassenger = 0;
             
             destinationFolder = tree.getSelectedFolder().path;
@@ -70,10 +73,6 @@ define(function(require, exports, module)
         
         function tryToLandCurrFile()
         {
-            console.log("copying:");
-            console.log("TO:"+destinationFolder);
-            console.log("FROM:"+"~/workspace"+passengers[currPassenger]);
-            
             //  check to make sure there are still files to copy
             if(currPassenger>=passengers.length)
             {
@@ -114,12 +113,12 @@ define(function(require, exports, module)
                                 function(isAll)
                                 {
                                     if(isAll) skipAll = true;
-                                    
+                                    anySkip = true;
                                     currPassenger ++
                                     tryToLandCurrFile();
                                 },
                                 //  show the all buttons and the cancel button
-                                { all: true, cancel:true });
+                                { all: true, cancel:false });
                             }
                             //  we are skipping all existing files, so advance to the next file
                             //  and try to land it
@@ -149,18 +148,49 @@ define(function(require, exports, module)
             fs.copy("~/workspace"+passengers[currPassenger].path, destinationFolder+"/"+passengers[currPassenger].label, {overwrite:true, recursive:true}, 
             function(err, data)
             {
-                if(!err) return;
-                success = false;
-                alert(err);
+                if(!err)
+                {
+                    currPassenger ++;
+                    tryToLandCurrFile();
+                }
+                else
+                {
+                    success = false;
+                    alert(err);
+                }
             });
-            currPassenger ++;
-            tryToLandCurrFile();
         }
         
         function landingComplete()
         {
-            tree.refresh(tree.selectedNodes, function(){});
-            if(success)alert("The flight was successful.");
+            tree.refresh(tree.selectedNodes, function(err)
+            {
+                if(err)
+                {
+                    
+                }
+                else
+                {
+                    if(success)
+                    {
+                        var message = (anySkip)? "Some files were skipped.": "No files were skipped.";
+                        alertDialog.show(   "Flight - Complete",
+                                            "The flight was successful.",
+                                            message,
+                                            function()
+                                            {
+                                                
+                                            });
+                    }
+                    else
+                    {
+                        alertDialog.show(   "Flight - Complete",
+                                            "The flight wasn't successful.",
+                                            "There were some errors.",
+                                            function(){});
+                    }
+                }
+            });
         }
             
         /***** Methods *****/
