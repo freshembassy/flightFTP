@@ -68,11 +68,13 @@ define(function(require, exports, module)
                     alert(err);
                 });
             }
-            tree.refresh([destinationFolder],function(err)
+            
+            tree.refresh(destinationFolder, function(err)
             {
-                
+                console.log("refresh complete");
+                if(success)alert("The flight was successful.");
             });
-            if(success)alert("The flight was successful.");
+            
         }
         
         
