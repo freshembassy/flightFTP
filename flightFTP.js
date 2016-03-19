@@ -68,7 +68,7 @@ define(function(require, exports, module)
                     alert(err);
                 });
             }
-            tree.refresh(tree.selectedNodes(), function(){});
+            tree.refresh(tree.selectedNodes, function(){});
             if(success)alert("The flight was successful.");
         }
         
