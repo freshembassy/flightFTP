@@ -59,6 +59,7 @@ define(function(require, exports, module)
         var skipAll;
         var currPassenger;
         var anySkip;
+        var _hider;
         function flightLanding()
         {
             overwriteAll = false;
@@ -68,7 +69,7 @@ define(function(require, exports, module)
             currPassenger = 0;
             
             destinationFolder = tree.getSelectedFolder().path;
-            notification.show("<div style='background: #666666; padding: 7px; font-weight: bold; color: #00ffff;'>Flight FTP - Processing please wait until the 'Flight Complete' dialog appears.</div>", true);
+            _hider = notification.show("<div style='background: #666666; padding: 7px; font-weight: bold; color: #00ffff;'>Flight FTP - Processing please wait until the 'Flight Complete' dialog appears.</div>", true);
             tryToLandCurrFile();
         }
         
@@ -193,6 +194,7 @@ define(function(require, exports, module)
                                     "There were some errors.",
                                     function(){});
             }
+            _hider();
         }
             
         /***** Methods *****/
