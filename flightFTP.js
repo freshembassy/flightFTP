@@ -1,6 +1,6 @@
 define(function(require, exports, module)
 {
-    main.consumes = ["Plugin", "tree", "ui", "menus", "fs", "dialog.fileoverwrite", "dialog.alert"];
+    main.consumes = ["Plugin", "tree", "ui", "menus", "fs", "dialog.fileoverwrite", "dialog.alert", "dialog.notification"];
     main.provides = ["flightFTP"];
     return main;
 
@@ -13,6 +13,7 @@ define(function(require, exports, module)
         var fs = imports.fs;
         var fileoverwrite = imports["dialog.fileoverwrite"];
         var alertDialog = imports["dialog.alert"];
+        var notification = imports["notification.bubble"]
         
         /***** Initialization *****/
         
@@ -163,6 +164,7 @@ define(function(require, exports, module)
         
         function landingComplete()
         {
+            notification("Flight FTP - Refresh may be required to show updated FTP state.", true);
             tree.refresh(tree.selectedNodes, function(err)
             {
                 if(err)
@@ -171,26 +173,27 @@ define(function(require, exports, module)
                 }
                 else
                 {
-                    if(success)
-                    {
-                        var message = (anySkip)? "Some files were skipped.": "No files were skipped.";
-                        alertDialog.show(   "Flight - Complete",
-                                            "The flight was successful.",
-                                            message,
-                                            function()
-                                            {
-                                                
-                                            });
-                    }
-                    else
-                    {
-                        alertDialog.show(   "Flight - Complete",
-                                            "The flight wasn't successful.",
-                                            "There were some errors.",
-                                            function(){});
-                    }
+                    
                 }
             });
+            if(success)
+            {
+                var message = (anySkip)? "Some files were skipped.": "No files were skipped.";
+                alertDialog.show(   "Flight - Complete",
+                                    "The flight was successful.",
+                                    message,
+                                    function()
+                                    {
+                                        
+                                    });
+            }
+            else
+            {
+                alertDialog.show(   "Flight - Complete",
+                                    "The flight wasn't successful.",
+                                    "There were some errors.",
+                                    function(){});
+            }
         }
             
         /***** Methods *****/
