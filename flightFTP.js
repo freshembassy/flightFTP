@@ -1,6 +1,6 @@
 define(function(require, exports, module)
 {
-    main.consumes = ["Plugin", "tree", "ui", "menus", "fs", "dialog"];
+    main.consumes = ["Plugin", "tree", "ui", "menus", "fs", "dialog.fileoverwrite"];
     main.provides = ["flightFTP"];
     return main;
 
@@ -11,7 +11,7 @@ define(function(require, exports, module)
         var tree = imports.tree;
         var ui = imports.ui;
         var fs = imports.fs;
-        var fileoverwrite = imports.dialog.fileoverwrite;
+        var fileoverwrite = imports["dialog.fileoverwrite"];
         
         /***** Initialization *****/
         
